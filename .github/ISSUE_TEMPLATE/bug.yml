@@ -1,0 +1,24 @@
+name: Bug report
+description: Report an incorrect status, navigation or window behavior
+title: "[Bug] "
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Lightkeeper version, macOS version, and affected Codex/Claude version.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Expected behavior, actual behavior, and steps to reproduce. For desktop chats, include whether Setup confirms Accessibility access.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Optional diagnostics
+      description: Review --diagnose output before sharing; remove private session titles, IDs and credentials.
+      render: text

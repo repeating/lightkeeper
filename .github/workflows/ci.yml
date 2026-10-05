@@ -1,0 +1,29 @@
+name: macOS checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Core tests
+        run: scripts/test.sh
+      - name: Isolated monitor tests
+        run: scripts/test-monitors.sh
+      - name: Universal macOS installer
+        run: scripts/dmg.sh
+      - name: Verify app signature
+        run: codesign --verify --strict --deep dist/Lightkeeper.app
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: Lightkeeper-macOS
+          path: |
+            dist/Lightkeeper.dmg
+            dist/Lightkeeper.dmg.sha256
+          retention-days: 14

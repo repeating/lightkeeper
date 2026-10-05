@@ -1,0 +1,29 @@
+# Lightkeeper 1.3.0
+
+A small native macOS window that tells you when your Codex or Claude Code session needs you.
+
+## Install
+
+1. Download **Lightkeeper.dmg** below.
+2. Open it and drag **Lightkeeper.app** into **Applications**.
+3. Open Lightkeeper and start a Codex or Claude Code session.
+
+**Requires macOS 14+**, on Apple Silicon or Intel. No developer tools are needed to run the app.
+
+The release is ad-hoc signed and **not notarized**. If macOS blocks the first launch, attempt to open the app, then choose **System Settings → Privacy & Security → Open Anyway**. [Apple's instructions](https://support.apple.com/102445).
+
+## Included
+
+- Green running, orange needs you, red finished.
+- Click a session to open its conversation.
+- Hide keeps monitoring active in the Dock; status changes reopen and expand the window.
+- Optional ChatGPT and Claude desktop chat monitoring through Accessibility.
+- MIT-licensed source code.
+
+Codex and Claude Code monitoring need no Accessibility access. For optional desktop chats, use Setup to enable monitoring and authorize Lightkeeper. An updated ad-hoc build can require removing the old Accessibility entry and adding the new app again. Gray means status unavailable; hidden or unsupported controls are never treated as completion.
+
+Browser tabs and cloud-only Codex sessions are not monitored. The internal app formats can change after upstream updates.
+
+Download **SHA256SUMS.txt** alongside the assets and run `shasum -a 256 -c SHA256SUMS.txt` in that directory to verify the DMG and app ZIP.
+
+[Source and contribution guide](https://github.com/repeating/lightkeeper)

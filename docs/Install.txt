@@ -1,0 +1,39 @@
+LIGHTKEEPER 1.3.0
+
+INSTALL
+1. Drag Lightkeeper.app onto the Applications shortcut.
+2. Open Lightkeeper from your Applications folder.
+3. Open Codex desktop or Claude Code and start a session.
+
+Requires macOS 14 or newer. Includes Apple Silicon and Intel builds.
+
+This personal build is locally signed, but is not Apple notarized.
+On a friend's Mac, macOS may block the first launch. If you trust this
+copy, try opening it, then go to System Settings > Privacy & Security
+and choose Open Anyway for Lightkeeper.
+Apple's instructions: https://support.apple.com/102445
+No developer tools are needed to run the app.
+
+USE
+Green: running. Orange: needs you. Red: finished. Gray: unavailable.
+Click a session row to open that exact conversation.
+Hide keeps the app monitoring in the Dock. Status changes bring it back.
+Use Command-Q to quit.
+
+Claude Terminal/IDE sessions resume their transcript in Claude desktop.
+CHATGPT AND CLAUDE CHATS
+Open the gear button in Lightkeeper for Setup.
+Desktop: choose Enable desktop chat monitoring, then grant Lightkeeper
+Accessibility access in macOS Settings. It reads exposed status controls;
+chats hidden from the app's UI can become gray rather than appear finished.
+If monitoring is enabled but access is denied, open Accessibility settings
+from Setup. Remove the old entry (possibly still named Session Beacon), then use + to add the exact
+app revealed by Show this app. Enable its switch and reopen Lightkeeper.
+Local ad-hoc builds can require this again after an app update.
+Browser tabs are not monitored.
+No chat messages or draft text are collected.
+
+Cloud-only Codex sessions are not monitored by the Codex adapter.
+Internal app formats can change after updates; warnings show when
+Lightkeeper cannot connect. No hooks or settings are changed.
+Session titles stay local. The app doesn't upload data or approve work.
