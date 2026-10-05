@@ -1,4 +1,4 @@
-# Lightkeeper 1.3.1
+# Lightkeeper 1.3.2
 
 A small native macOS window that tells you when your Codex or Claude Code session needs you.
 
@@ -12,7 +12,11 @@ A small native macOS window that tells you when your Codex or Claude Code sessio
 
 The release is ad-hoc signed and **not notarized**. If macOS blocks the first launch, attempt to open the app, then choose **System Settings → Privacy & Security → Open Anyway**. [Apple's instructions](https://support.apple.com/102445).
 
-## Fixed in 1.3.1
+## Improved installer in 1.3.2
+
+Opening the DMG now shows a compact branded installer window with Lightkeeper and Applications side by side. Drag the app along the arrow into Applications. Finder now shows the lighthouse on the mounted disk as well as the app.
+
+## Also included: the 1.3.1 fix
 
 Claude Code sessions no longer appear again as gray Claude desktop chats. Sidebar tracking now requires a confirmed chat view, and entries identified as Code sessions are removed instead of kept as unavailable. Separate regular chats keep their own identities and status.
 

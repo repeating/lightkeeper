@@ -64,6 +64,10 @@ Not covered: browser tabs, and remote or cloud-only Codex sessions.
 2. Drag **Lightkeeper** into **Applications** and open it.
 3. Start a Claude Code or Codex session. It appears in the window automatically.
 
+<p align="center">
+  <img src="docs/media/installer.png" width="680" alt="Lightkeeper installer: drag the lighthouse app along the arrow into Applications">
+</p>
+
 > **First launch:** release builds are ad-hoc signed and not yet notarized, so macOS may block the first launch. Open **System Settings → Privacy & Security** and choose **Open Anyway**. Apple explains this [here](https://support.apple.com/102445).
 
 Requires macOS 14 or newer, on Apple Silicon or Intel.
@@ -82,7 +86,7 @@ Desktop monitoring reads exposed controls and sidebar rows. It filters old idle 
 
 ## Build from source
 
-You need the Swift 6 Command Line Tools. Full Xcode isn't required.
+You need the Swift 6 Command Line Tools and Python 3 for DMG packaging. Full Xcode isn't required.
 
 ```sh
 git clone https://github.com/repeating/lightkeeper.git
@@ -91,6 +95,8 @@ scripts/test.sh            # core tests
 scripts/test-monitors.sh   # monitor adapters
 scripts/dmg.sh             # builds the universal app and DMG into dist/
 ```
+
+The DMG script installs pinned packaging tools into `.build-tools/dmg`, verifies the mounted installer layout and app signature, and creates a branded drag-to-Applications window. These tools are not bundled in the app.
 
 Building uses a project-local workaround for stale Swift package manifest interfaces; it does not change the Command Line Tools installation. The core test harness uses executable assertions because Command Line Tools do not include XCTest. Run `scripts/test-window.sh` for Hide/Dock/reopening/focus checks in an isolated demo.
 

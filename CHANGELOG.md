@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2 — 2026-10-05
+
+- Branded drag-to-Applications installer window with a Retina background and fixed icon positions.
+- Fix the mounted DMG volume icon so Finder displays the lighthouse.
+- Keep supporting files out of the install view and verify the packaged layout, icon, and app signature.
+
 ## 1.3.1 — 2026-10-05
 
 - Fix Claude Code sessions appearing again as gray regular Claude chats.

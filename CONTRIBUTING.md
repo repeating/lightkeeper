@@ -1,6 +1,6 @@
 # Contributing to Lightkeeper
 
-Lightkeeper is a Swift package targeting macOS 14+. Swift 6 Command Line Tools or Xcode with Swift 6+ are sufficient.
+Lightkeeper is a Swift package targeting macOS 14+. Use Swift 6 Command Line Tools or Xcode with Swift 6+, plus Python 3 for DMG packaging. Packaging dependencies are installed into a project-local virtual environment.
 
 1. Fork and clone the repository.
 2. Make a focused change with a clear problem and resulting behavior.
