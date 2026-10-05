@@ -22,7 +22,8 @@
 </p>
 
 <p align="center">
-  <img src="marketing/lightkeeper-social-preview.png" width="720" alt="Lightkeeper: know the moment your Claude Code or Codex session needs you">
+  <a href="docs/media/lightkeeper-demo.mp4"><img src="docs/media/lightkeeper-demo.gif" width="420" alt="Lightkeeper demo: a Codex session turns orange and jumps to the top when it needs you, then one click opens it"></a>
+  <br><sub>8-second demo · <a href="docs/media/lightkeeper-demo.mp4">watch the full-quality video</a></sub>
 </p>
 
 ---
