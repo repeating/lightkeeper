@@ -11,7 +11,20 @@ import BeaconCore
         let focusPreserved = before == NSWorkspace.shared.frontmostApplication?.bundleIdentifier
         app.hidePanel()
         _ = app.applicationShouldHandleReopen(NSApp, hasVisibleWindows: false)
+        let code = Session(id: "claude:fixture", source: "Claude Code", title: "Same title", state: .running, detail: "Running")
+        let duplicate = Session(id: "desktop:Claude:fixture", source: "Claude", title: "Same title", state: .unknown, detail: "Unavailable")
+        let chat = Session(id: "desktop:Claude:real-chat", source: "Claude", title: "Same title", state: .needsInput, detail: "Needs you",
+                           openURL: URL(string: "https://claude.ai/chat/real-chat"))
+        app.model.accept(code, initial: true); app.model.accept(duplicate, initial: true); app.model.accept(chat, initial: true)
+        app.hidePanel()
+        app.model.removeSession(duplicate.id)
+        let cleanupPreservesDistinctSessions = !app.model.sessions.contains { $0.id == duplicate.id }
+            && app.model.sessions.contains { $0.id == code.id && $0.state == .running }
+            && app.model.sessions.contains { $0.id == chat.id && $0.state == .needsInput }
+        let cleanupDoesNotAlert = !app.panel.isVisible
+        _ = app.applicationShouldHandleReopen(NSApp, hasVisibleWindows: false)
         let report: [String: Bool] = ["hidePreservesDock": wasHidden, "statusReopensAndExpands": reopened, "focusPreserved": focusPreserved,
+                                    "duplicateCleanupPreservesDistinctSessions": cleanupPreservesDistinctSessions, "duplicateCleanupDoesNotAlert": cleanupDoesNotAlert,
                                     "dockReopens": app.panel.isVisible, "floating": app.panel.level == .floating,
                                     "allSpaces": app.panel.collectionBehavior.contains(.canJoinAllSpaces)]
         let output = ProcessInfo.processInfo.environment["BEACON_UI_REPORT"] ?? ".build/window-test-report.json"

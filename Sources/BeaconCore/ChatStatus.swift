@@ -25,6 +25,22 @@ public enum ChatStatus {
         let matches = candidates.filter { $0.title == title }
         return matches.count == 1 ? matches[0].id : nil
     }
+    public static func desktopHistory(previous: [String: Session], observed: [String: Session], excluding: Set<String>) -> [String: Session] {
+        var current = observed.filter { !excluding.contains($0.key) }
+        for (id, var old) in previous where current[id] == nil && !excluding.contains(id) {
+            old.state = .unknown; old.detail = "Status unavailable in \(old.source)"
+            current[id] = old
+        }
+        return current
+    }
+    public static func claudeChatMode(chatSelected: Bool, codeSelected: Bool, url: String?) -> Bool {
+        guard !codeSelected else { return false }
+        if let url = url.flatMap(webURL) {
+            if url.path.hasPrefix("/epitaxy/") { return false }
+            if url.path.hasPrefix("/chat/") || url.path.hasPrefix("/cowork/") { return true }
+        }
+        return chatSelected
+    }
     public static func webURL(_ string: String) -> URL? {
         guard let url = URL(string: string), url.scheme == "https", url.user == nil, url.password == nil,
               ["chatgpt.com", "chat.openai.com", "claude.ai"].contains(url.host?.lowercased() ?? "") else { return nil }

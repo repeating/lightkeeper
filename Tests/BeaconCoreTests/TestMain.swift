@@ -32,6 +32,8 @@ func XCTAssertThrowsError<T>(_ expression: @autoclosure () throws -> T, file: St
             ("Chat signals and unavailable controls", c.testChatSignalsDoNotMistakeMissingControlsForCompletion),
             ("Desktop sidebar signals and safe chat URLs", c.testDesktopSidebarStatusesAndSafeURLs),
             ("Sidebar remount identity and duplicate titles", c.testSidebarRemountKeepsIdentityOnlyWhenUnambiguous),
+            ("Retire reclassified Code sidebar rows", c.testCodeSidebarRetirementDoesNotLeaveGrayDuplicates),
+            ("Require confirmed Claude chat mode", c.testClaudeSidebarRequiresConfirmedChatMode),
             ("Async question cards and accepted replies", s.testAsyncQuestionCardsAreOrangeUntilAcceptedReply),
             ("Codex waiting flags and completion", s.testCodexRuntimeFlagsOverrideRunningAndClearWhenResolved),
             ("Pending question", s.testPendingQuestionIsOrangeEvenWithIdleRuntime),

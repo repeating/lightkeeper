@@ -44,6 +44,7 @@ final class BeaconModel: ObservableObject {
             // A temporary partial registry write should retain the known colors.
             if !connected && detail == "Open Claude Code to connect" { self.ledger.markSourceDisconnected("Claude Code"); self.publish() }
         }
+        desktopChats.onRemove = { [weak self] in self?.removeSession($0) }
         desktopChats.onSession = { [weak self] in self?.accept($0, initial: $1) }
         desktopChats.onConnection = { [weak self] ok, detail in
             self?.desktopChatsConnected = ok; self?.desktopChatsDetail = detail
@@ -59,6 +60,7 @@ final class BeaconModel: ObservableObject {
             collapsed = false; onAlert?()
         }
     }
+    func removeSession(_ id: String) { ledger.remove(id); publish() }
     func publish() {
         let priority: [SessionState: Int] = [.needsInput: 0, .running: 1, .unknown: 2, .finished: 3]
         sessions = ledger.sessions.values.sorted {

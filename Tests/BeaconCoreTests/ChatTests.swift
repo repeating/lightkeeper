@@ -26,4 +26,21 @@ final class ChatTests: XCTestCase {
         XCTAssertEqual(ChatStatus.sidebarSessionID(title: "Unrelated", visibleTitles: ["Unrelated"], candidates: [running]), nil)
     }
 
+    func testCodeSidebarRetirementDoesNotLeaveGrayDuplicates() {
+        let duplicate = Session(id: "desktop:Claude:code", source: "Claude", title: "Website launch", state: .running, detail: "Running")
+        let chat = Session(id: "desktop:Claude:chat", source: "Claude", title: "Holiday plan", state: .running, detail: "Running")
+        let current = ChatStatus.desktopHistory(previous: [duplicate.id: duplicate, chat.id: chat], observed: [:], excluding: [duplicate.id])
+        XCTAssertEqual(Set(current.keys), Set([chat.id]))
+        XCTAssertEqual(current[chat.id]?.state, .unknown)
+        // A control reclassified during a scan must not reintroduce the retired row.
+        XCTAssertEqual(ChatStatus.desktopHistory(previous: [:], observed: [duplicate.id: duplicate], excluding: [duplicate.id]).count, 0)
+    }
+    func testClaudeSidebarRequiresConfirmedChatMode() {
+        XCTAssertTrue(ChatStatus.claudeChatMode(chatSelected: true, codeSelected: false, url: "https://claude.ai/chat/a"))
+        XCTAssertFalse(ChatStatus.claudeChatMode(chatSelected: false, codeSelected: false, url: nil))
+        XCTAssertFalse(ChatStatus.claudeChatMode(chatSelected: true, codeSelected: true, url: nil))
+        XCTAssertFalse(ChatStatus.claudeChatMode(chatSelected: true, codeSelected: false, url: "https://claude.ai/epitaxy/local_test"))
+        XCTAssertTrue(ChatStatus.claudeChatMode(chatSelected: false, codeSelected: false, url: "https://claude.ai/cowork/cse_test"))
+    }
+
 }

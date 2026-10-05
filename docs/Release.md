@@ -1,4 +1,4 @@
-# Lightkeeper 1.3.0
+# Lightkeeper 1.3.1
 
 A small native macOS window that tells you when your Codex or Claude Code session needs you.
 
@@ -11,6 +11,10 @@ A small native macOS window that tells you when your Codex or Claude Code sessio
 **Requires macOS 14+**, on Apple Silicon or Intel. No developer tools are needed to run the app.
 
 The release is ad-hoc signed and **not notarized**. If macOS blocks the first launch, attempt to open the app, then choose **System Settings → Privacy & Security → Open Anyway**. [Apple's instructions](https://support.apple.com/102445).
+
+## Fixed in 1.3.1
+
+Claude Code sessions no longer appear again as gray Claude desktop chats. Sidebar tracking now requires a confirmed chat view, and entries identified as Code sessions are removed instead of kept as unavailable. Separate regular chats keep their own identities and status.
 
 ## Included
 

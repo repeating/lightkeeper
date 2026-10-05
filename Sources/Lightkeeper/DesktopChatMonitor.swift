@@ -4,6 +4,7 @@ import BeaconCore
 
 final class DesktopChatMonitor {
     var onSession: ((Session, Bool) -> Void)?
+    var onRemove: ((String) -> Void)?
     var onConnection: ((Bool, String) -> Void)?
     private let queue = DispatchQueue(label: "beacon.desktop-chats", qos: .utility)
     private var timer: DispatchSourceTimer?
@@ -39,15 +40,33 @@ final class DesktopChatMonitor {
             ["com.anthropic.claudefordesktop", "com.openai.chat", "com.openai.codex"].contains($0.bundleIdentifier ?? "")
         }
         var current: [String: Session] = [:]
+        var retired = Set<String>()
         for app in apps {
             let source = app.bundleIdentifier == "com.anthropic.claudefordesktop" ? "Claude" : "ChatGPT"
             let root = AXUIElementCreateApplication(app.processIdentifier)
             AXUIElementSetMessagingTimeout(root, 0.25)
             for window in windows(root) {
                 let controls = inspect(window, source: source)
+                let prefix = "desktop:\(source):\(app.processIdentifier):\(CFHash(window)):"
+                if source == "Claude" && !ChatStatus.claudeChatMode(chatSelected: controls.chatSelected,
+                        codeSelected: controls.codeSelected, url: controls.url) {
+                    // Code uses the same sidebar status labels as regular chats. Retire
+                    // only identified sidebar controls; URL-backed chats stay separate.
+                    if controls.codeSelected || controls.url.flatMap(ChatStatus.webURL)?.path.hasPrefix("/epitaxy/") == true {
+                        for (element, _, title, _) in controls.sidebar {
+                            let candidates = known.values.filter { $0.id.hasPrefix(prefix) && $0.openURL == nil }
+                            let exactIDs = candidates.filter { targets[$0.id].map { CFEqual($0, element) } == true }.map(\.id)
+                            if !exactIDs.isEmpty { retired.formUnion(exactIDs) }
+                            else if let id = ChatStatus.sidebarSessionID(title: title,
+                                    visibleTitles: controls.sidebar.map { $0.2 }, candidates: candidates) {
+                                retired.insert(id)
+                            }
+                        }
+                    }
+                    continue
+                }
                 var sidebarRows: [Session] = []
                 for (element, label, title, state) in controls.sidebar {
-                    let prefix = "desktop:\(source):\(app.processIdentifier):\(CFHash(window)):"
                     let exactID = targets.first { $0.key.hasPrefix(prefix) && CFEqual($0.value, element) }?.key
                     let existingID = exactID ?? ChatStatus.sidebarSessionID(title: title,
                         visibleTitles: controls.sidebar.map { $0.2 },
@@ -56,6 +75,7 @@ final class DesktopChatMonitor {
                     let id = existingID ?? prefix + UUID().uuidString
                     targets[id] = element
                     let row = Session(id: id, source: source, title: title, state: state, detail: state.label,
+                        openURL: known[id]?.title == title ? known[id]?.openURL : nil,
                         openAppBundleID: app.bundleIdentifier, openAccessibilityLabel: label)
                     current[id] = row; sidebarRows.append(row)
                 }
@@ -65,6 +85,7 @@ final class DesktopChatMonitor {
                     let matches = sidebarRows.filter { $0.title == title }
                     let id = matches.count == 1 ? matches[0].id : "desktop:\(source):\(app.processIdentifier):url:" + safe.absoluteString
                     let state = ChatStatus.state(running: controls.running, needsInput: controls.needsInput, composerPresent: controls.composer)
+                    if matches.count == 1 { current[id]?.openURL = safe }
                     if matches.count != 1 && (state == .running || state == .needsInput || known[id] != nil) {
                         current[id] = Session(id: id, source: source, title: title, state: state, detail: state.label,
                             openURL: safe, openAppBundleID: app.bundleIdentifier)
@@ -72,9 +93,10 @@ final class DesktopChatMonitor {
                 }
             }
         }
-        for (id, var old) in known where current[id] == nil {
-            old.state = .unknown; old.detail = "Status unavailable in \(old.source)"
-            current[id] = old
+        current = ChatStatus.desktopHistory(previous: known, observed: current, excluding: retired)
+        for id in retired {
+            targets.removeValue(forKey: id)
+            DispatchQueue.main.async { self.onRemove?(id) }
         }
         for row in current.values {
             let first = initial
@@ -94,7 +116,7 @@ final class DesktopChatMonitor {
     private struct Controls {
         var sidebar: [(AXUIElement, String, String, SessionState)] = []
         var running = false; var needsInput = false; var composer = false
-        var url: String?; var title = ""; var codeSelected = false
+        var url: String?; var title = ""; var codeSelected = false; var chatSelected = false
     }
     private func string(_ element: AXUIElement, _ attribute: String) -> String {
         var result: CFTypeRef?
@@ -126,10 +148,12 @@ final class DesktopChatMonitor {
             let label = string(element, kAXDescriptionAttribute)
             let title = string(element, kAXTitleAttribute)
             if label == "Chat messages" || title == "Chat messages" || label.hasPrefix("Artifact panel") || title.hasPrefix("Artifact panel") || label.hasPrefix("Message ") || title.hasPrefix("Message ") { return }
-            if role == kAXRadioButtonRole && label.hasPrefix("Code") {
+            if role == kAXRadioButtonRole && (label.hasPrefix("Code") || label == "Chat and Cowork") {
                 var value: CFTypeRef?
                 if AXUIElementCopyAttributeValue(element, kAXValueAttribute as CFString, &value) == .success {
-                    result.codeSelected = result.codeSelected || (value as? NSNumber)?.intValue == 1 || (value as? String) == "1"
+                    let selected = (value as? NSNumber)?.intValue == 1 || (value as? String) == "1"
+                    if label.hasPrefix("Code") { result.codeSelected = result.codeSelected || selected }
+                    else { result.chatSelected = result.chatSelected || selected }
                 }
             }
             let inSidebar = sidebar || label == "Sidebar" || title == "Sidebar"
@@ -155,7 +179,6 @@ final class DesktopChatMonitor {
             for child in children(element) { walk(child, sidebar: inSidebar, dialog: inDialog, depth: depth + 1) }
         }
         walk(root, sidebar: false, dialog: false, depth: 0)
-        if source == "Claude" && result.codeSelected { result.sidebar.removeAll() }
         return result
     }
     func open(_ row: Session) -> Bool {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1 — 2026-10-05
+
+- Fix Claude Code sessions appearing again as gray regular Claude chats.
+- Require a confirmed chat view before collecting Claude desktop sidebar rows.
+- Remove reclassified Code sidebar entries while preserving separate chat conversations and session states.
+
 ## 1.3.0 — 2026-10-05
 
 First public Lightkeeper release.

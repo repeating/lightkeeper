@@ -150,6 +150,10 @@ public struct SessionLedger {
         guard sessions[id]?.state == .finished else { return }
         dismissed.insert(id); sessions.removeValue(forKey: id)
     }
+    public mutating func remove(_ id: String) {
+        sessions.removeValue(forKey: id)
+        dismissed.remove(id); lastKnownStates.removeValue(forKey: id)
+    }
     public mutating func markSourceDisconnected(_ source: String) {
         for (id, var row) in sessions where row.source == source {
             row.state = .unknown; row.detail = "Connection unavailable"; sessions[id] = row
