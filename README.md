@@ -10,11 +10,15 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/repeating/lightkeeper/releases/latest"><img src="https://img.shields.io/github/v/release/repeating/lightkeeper?label=download&color=FF9F0A" alt="Latest release"></a>
+  <a href="https://github.com/repeating/lightkeeper/releases/latest/download/Lightkeeper.dmg"><img src="https://img.shields.io/badge/Download_for_macOS-DMG-FF9F0A?style=for-the-badge" alt="Download Lightkeeper for macOS"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34D766" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-1E1F55" alt="macOS 14+">
   <img src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-universal-1E1F55" alt="Universal binary">
   <img src="https://img.shields.io/badge/Swift-6-F05138" alt="Swift 6">
+</p>
+
+<p align="center">
+  <a href="https://github.com/repeating/lightkeeper/releases/latest/download/Lightkeeper.dmg"><strong>Download Lightkeeper for macOS (.dmg)</strong></a> · <a href="https://github.com/repeating/lightkeeper/releases/latest">Release notes</a>
 </p>
 
 <p align="center">
